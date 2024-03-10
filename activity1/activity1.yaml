@@ -12,7 +12,7 @@
       ### if it has ansible.builtin.apt init the writing only apt will gives same result
       ### it is a module manages apt-packages
       ansible.builtin.apt:
-      ### parameters
+        ### parameters
         name:
           - apache2
         state: present

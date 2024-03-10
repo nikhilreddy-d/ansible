@@ -8,7 +8,7 @@
   tasks:
     - name: install apache and php packages
       ansible.builtin.apt:
-      ### multiple steps/installations can be done simply by this step
+        ### multiple steps/installations can be done simply by this step
         name:
           - apache2
           - php
@@ -21,5 +21,13 @@
       ### if it has ansible.builtin.copy init the writing only copy will gives same result
       ### ansible.builtin.copy module – Copy files to remote locations
       ansible.builtin.copy:
-        src: info.php      ### path to a file to copy to the remote server.
-        dest: /var/www/html/info.php    ### Remote absolute path where the file should be copied to.dest = destination
+        src: info.php ### path to a file to copy to the remote server.
+        dest: /var/www/html/info.php ### Remote absolute path where the file should be copied to.dest = destination
+    ### servivce in redhat should be start and enabled
+    ### ansible.builtin.service module – Manage services
+    - name: ensure httpd is running
+      ### making the services to start
+      ansible.builtin.service:
+        name: httpd
+        enabled: yes
+        state: started

@@ -16,7 +16,7 @@
           - php-common
         state: present
     - name: create info.php
-    ### here not using info or copy file from remote insted using content pharameter
+      ### here not using info or copy file from remote insted using content pharameter
       ansible.builtin.copy:
-        content: '<?php phpinfo(); ?>'
+        content: "<?php phpinfo(); ?>"
         dest: /var/www/html/info.php
