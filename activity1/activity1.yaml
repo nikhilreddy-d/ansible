@@ -1,14 +1,14 @@
-###
+### to install apache server
 ---
 ### name of the activity
 - name: activity 1
   ### if the manual command has sudo init or it needs a sudo permissions
   become: yes
-  ### where should the execution needs to takes place either all machines or few of them or single
+  ### where should the execution needs to takes place either all machines or few of them or single inventory file
   hosts: all
   tasks: ### whats the reason that playbook is created
     - name: install apache server
-      ### if it has ansible.builtin.apt init the writing only apt will gives same
+      ### if it has ansible.builtin.apt init the writing only apt will gives same result
       ### it is a module manages apt-packages
       ansible.builtin.apt:
       ### parameters

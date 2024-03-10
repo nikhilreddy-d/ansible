@@ -1,0 +1,22 @@
+---
+- name: activity 2 - install php
+  become: yes
+  hosts: all
+  tasks:
+    - name: install apache and php packages
+      ansible.builtin.apt:
+      ### multiple steps/installations can be done simply
+        name:
+          - apache2
+          - php
+          - libapache2-mod-php
+          - php-mysql
+        state: present
+        update_cache: yes
+    ### copy the file from inventory or remote locations
+    - name: copy php file
+      ### if it has ansible.builtin.copy init the writing only copy will gives same result
+      ### ansible.builtin.copy module – Copy files to remote locations
+      ansible.builtin.copy:
+        src: info.php      ### path to a file to copy to the remote server.
+        dest: /var/www/html/info.php    ### Remote absolute path where the file should be copied to.
