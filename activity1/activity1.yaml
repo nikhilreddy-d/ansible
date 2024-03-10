@@ -1,0 +1,18 @@
+###
+---
+### name of the activity
+- name: activity 1
+  ### if the manual command has sudo init or it needs a sudo permissions
+  become: yes
+  ### where should the execution needs to takes place either all machines or few of them or single
+  hosts: all
+  tasks: ### whats the reason that playbook is created
+    - name: install apache server
+      ### if it has ansible.builtin.apt init the writing only apt will gives same
+      ### it is a module manages apt-packages
+      ansible.builtin.apt:
+      ### parameters
+        name:
+          - apache2
+        state: present
+        update_cache: yes
