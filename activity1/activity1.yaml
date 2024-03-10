@@ -1,4 +1,5 @@
-### to install apache server
+### to install apache server on ubuntui
+### if the machine changes the manual steps will be changes so the playbook will also have certain changes
 ---
 ### name of the activity
 - name: activity 1

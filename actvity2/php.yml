@@ -1,3 +1,6 @@
+### installing php,apache on ubuntu
+### if the machine changes the manual steps will be changes so the playbook will also have certain changes
+
 ---
 - name: activity 2 - install php
   become: yes
@@ -5,7 +8,7 @@
   tasks:
     - name: install apache and php packages
       ansible.builtin.apt:
-      ### multiple steps/installations can be done simply
+      ### multiple steps/installations can be done simply by this step
         name:
           - apache2
           - php
@@ -19,4 +22,4 @@
       ### ansible.builtin.copy module – Copy files to remote locations
       ansible.builtin.copy:
         src: info.php      ### path to a file to copy to the remote server.
-        dest: /var/www/html/info.php    ### Remote absolute path where the file should be copied to.
+        dest: /var/www/html/info.php    ### Remote absolute path where the file should be copied to.dest = destination

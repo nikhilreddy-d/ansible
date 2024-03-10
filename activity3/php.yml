@@ -1,0 +1,22 @@
+### installing php,apache on redhat
+### if the machine changes the manual steps will be changes so the playbook will also have certain changes
+
+---
+- name: activity 3 install apache and php
+  become: yes
+  hosts: all
+  tasks:
+    - name: install apache
+      ### ansible.builtin.dnf module – Manages packages with the dnf package manager
+      ansible.builtin.dnf:
+        name:
+          - httpd
+          - php
+          - php-cli
+          - php-common
+        state: present
+    - name: create info.php
+    ### here not using info or copy file from remote insted using content pharameter
+      ansible.builtin.copy:
+        content: '<?php phpinfo(); ?>'
+        dest: /var/www/html/info.php
