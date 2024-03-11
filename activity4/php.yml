@@ -22,11 +22,7 @@
     - name: install apache and php packages
       ansible.builtin.apt:
         ### multiple steps/installations can be done simply by this step
-        name:
-          - apache2
-          - php
-          - libapache2-mod-php
-          - php-mysql
+        name: "{{ all_packages }}"
         state: present
         update_cache: yes
       ### when statement is taken from the facts of ansible it only executes when it is true
@@ -37,11 +33,7 @@
     - name: install apache
       ### ansible.builtin.dnf module – Manages packages with the dnf package manager
       ansible.builtin.dnf:
-        name:
-          - httpd
-          - php
-          - php-cli
-          - php-common
+        name: "{{ all_packages }}"
         state: present
       ### here if the machine is redhat then it executes or it skips it
       when: ansible_facts["os_family"] == "RedHat"
@@ -57,7 +49,7 @@
     - name: ensure httpd is running
       ### making the services to start
       ansible.builtin.service:
-        name: httpd
+        name: "{{ package_name }}"
         enabled: yes
         state: started
         ### here if the machine is redhat then it executes or it skips it
