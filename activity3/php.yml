@@ -18,5 +18,7 @@
     - name: create info.php
       ### here not using info or copy file from remote insted using content pharameter
       ansible.builtin.copy:
-        content: "<?php phpinfo(); ?>"
-        dest: /var/www/html/info.php
+        ### content for the file to copy
+        content: '<?php phpinfo(); ?>'
+        ### destination path of the file
+        dest: /var/www/html/info.php/var/www/html/info.php

@@ -1,0 +1,48 @@
+ ### playbook for installing php in both redhat and ubuntu
+---
+- name: activity 4 - install php
+  become: yes
+  hosts: webserver
+  tasks:
+    - name: install apache and php packages
+      ansible.builtin.apt:
+        ### multiple steps/installations can be done simply by this step
+        name:
+          - apache2
+          - php
+          - libapache2-mod-php
+          - php-mysql
+        state: present
+        update_cache: yes
+      ### when statement is taken from the facts of ansible it only executes when it is true
+      ### here if the machine is debian then it executes or it skips it
+      ### all variables can be used directly in conditionals without double curly braces
+      ### The when clause is a raw Jinja2 expression without double curly braces (see group_by_module). When you run the task or playbook, Ansible evaluates the test for all hosts. On any host where the test passes (returns a value of True),
+      when: ansible_facts["os_family"] == "Debian"
+    - name: install apache
+      ### ansible.builtin.dnf module – Manages packages with the dnf package manager
+      ansible.builtin.dnf:
+        name:
+          - httpd
+          - php
+          - php-cli
+          - php-common
+        state: present
+      when: ansible_facts["os_family"] == "RedHat"
+    - name: create info.php
+      ### here not using info or copy file from remote insted using content pharameter
+      ansible.builtin.copy:
+        ### content for the file to copy
+        content: '<?php phpinfo(); ?>'
+        ### destination path of the file
+        dest: /var/www/html/info.php
+     ### servivce in redhat should be start and enabled
+    ### ansible.builtin.service module – Manage services
+    - name: ensure httpd is running
+      ### making the services to start
+      ansible.builtin.service:
+        name: httpd
+        enabled: yes
+        state: started
+        when: ansible_facts["os_family"] == "RedHat"
+

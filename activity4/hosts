@@ -1,0 +1,10 @@
+### ip adresses of the nodes where the playbook makes changes or inventory
+
+### local group inventory
+[local]
+172.31.30.90
+
+### webservers group inventory
+[webservers]
+172.31.17.52
+172.31.23.151
