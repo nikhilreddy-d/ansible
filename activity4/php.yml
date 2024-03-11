@@ -14,6 +14,11 @@
       ### all variables can be used directly in conditionals without double curly braces
       ### The when clause is a raw Jinja2 expression without double curly braces (see group_by_module). When you run the task or playbook, Ansible evaluates the test for all hosts. On any host where the test passes (returns a value of True),
       when: ansible_facts["os_family"] != "Debian" and ansible_facts["os_family"] != "RedHat
+    - name: print value
+      ### ansible.builtin.debug module – Print statements during execution
+      ansible.builtin.debug:
+        ### A variable name to debug.
+        var: all_packages
     - name: install apache and php packages
       ansible.builtin.apt:
         ### multiple steps/installations can be done simply by this step
