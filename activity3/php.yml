@@ -22,3 +22,9 @@
         content: '<?php phpinfo(); ?>'
         ### destination path of the file
         dest: /var/www/html/info.php/var/www/html/info.php
+    # for redhat machine extra step to run httpd
+    - name: ensure httpd is running
+      ansible.builtin.service:
+        name: httpd
+        enabled: yes
+        state: starte
