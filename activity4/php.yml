@@ -1,61 +1,26 @@
-### playbook for installing php in both redhat and ubuntu
 ---
 - name: activity 4 - install php
   become: yes
   hosts: webserver
   tasks:
-    ### to let the user know that the playbook works only on debian and redhat machines and not in any other
     - name: fail on unsupported operating systems
-      ### ansible.builtin.fail module – Fail with custom message
       ansible.builtin.fail:
-        ### The customized message used for failing execution.
         msg: "This playbook will work on Debian and RedHat Only"
-      ### here if the machine is debian and redhat then it executes or it skips it
-      ### all variables can be used directly in conditionals without double curly braces
-      ### The when clause is a raw Jinja2 expression without double curly braces (see group_by_module). When you run the task or playbook, Ansible evaluates the test for all hosts. On any host where the test passes (returns a value of True),
       when: ansible_facts["os_family"] != "Debian" and ansible_facts["os_family"] != "RedHat
     - name: print value
-      ### ansible.builtin.debug module – Print statements during execution
       ansible.builtin.debug:
-        ### A variable name to debug.
         var: all_packages
-    # - name: install apache and php packages
-    #   ansible.builtin.apt:
-    #     ### multiple steps/installations can be done simply by this step
-    #     name: "{{ all_packages }}"
-    #     state: present
-    #     update_cache: yes
-    #   ### when statement is taken from the facts of ansible it only executes when it is true
-    #   ### here if the machine is debian then it executes or it skips it
-    #   ### all variables can be used directly in conditionals without double curly braces
-    #   ### The when clause is a raw Jinja2 expression without double curly braces (see group_by_module). When you run the task or playbook, Ansible evaluates the test for all hosts. On any host where the test passes (returns a value of True),
-    #   when: ansible_facts["os_family"] == "Debian"
     - name: install apache
-      # ### ansible.builtin.dnf module – Manages packages with the dnf package manager
-      # ansible.builtin.dnf:
-      #   name: "{{ all_packages }}"
-      ### ansible.builtin.package module – Generic OS package manager
       ansible.builtin.package:
         name: "{{ item }}"
         state: present
-      ###  the loop keyword is to execute a task multiple times.
       loop: "{{ all_packages }}"
-      ### here if the machine is redhat then it executes or it skips it
-      # when: ansible_facts["os_family"] == "RedHat"
     - name: create info.php
-      ### here not using info or copy file from remote insted using content pharameter
       ansible.builtin.copy:
-        ### content for the file to copy
         content: "<?php phpinfo(); ?>"
-        ### destination path of the file
         dest: /var/www/html/info.php
-      ### servivce in redhat should be start and enabled
-    ### ansible.builtin.service module – Manage services
     - name: ensure httpd is running
-      ### making the services to start
       ansible.builtin.service:
         name: "{{ package_name }}"
         enabled: yes
         state: started
-        # ### here if the machine is redhat then it executes or it skips it
-        # when: ansible_facts["os_family"] == "RedHat"
