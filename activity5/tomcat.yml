@@ -10,7 +10,10 @@
     tomcat_major_version: 10
     tomcat_specific_version: 10.1.14
     java_version: "11"
-    service_file_path: "etc/systemd/system/tomcat.service" 
+    service_file_path: "/etc/systemd/system/tomcat.service"
+    tomcat_admin_username: admin
+    tomcat_admin_password: admin@123
+    allowed_ip_range: ".*"
   tasks:
     - name: install jdk
       ansible.builtin.apt:
@@ -34,7 +37,7 @@
         home: "{{ homedir }}"
         create_home: true
         shell: "{{ shell }}"
-    - name: create a directory if it does not exist
+    - name: Create a directory if it does not exist
       ansible.builtin.file:
         path: "{{ homedir }}"
         group: "{{ groupname }}"
@@ -49,13 +52,11 @@
         group: "{{ groupname }}"
         owner: "{{ username }}"
         remote_src: true
-    - name: Create a symbolic link
-      ansible.builtin.file:
-        src: "{{ homedir }}/apache-tomcat-{{ tomcat_specific_version }}"
-        dest: "{{ homedir }}/latest"
-        owner: "{{ username }}"
-        group: "{{ groupname }}"
-        state: link
+      notify:
+        - Create a symbolic link
+    - name: run all the hanlders
+      ansible.builtin.meta: flush_handlers
+    
     - name: Recursively change ownership of a directory
       ansible.builtin.file:
         path: "{{ homedir }}"
@@ -64,7 +65,7 @@
         owner: "{{ username }}"
         group: "{{ groupname }}"
     - name: get all the shell files
-      ansible.builtin.command: sudo ls /opt/tomcat/latest/bin/*.sh
+      ansible.builtin.command: sudo sh -c 'ls /opt/tomcat/latest/bin/*.sh'
       register: shell_files
     - name: print the value
       ansible.builtin.debug:
@@ -80,9 +81,41 @@
       ansible.builtin.template:
         src: templates/tomcat.j2
         dest: "{{ service_file_path }}"
-    - name: reload daemon, enable and start tomcat
+      notify:
+        - restart tomcat
+    - name: copy users xml
+      ansible.builtin.template:
+        src: templates/tomcat-users.xml.j2
+        dest: "{{ homedir }}/latest/conf/tomcat-users.xml"
+        owner: "{{ username }}"
+        group: "{{ groupname }}"
+      notify:
+        - restart tomcat
+    - name: copy context.xml
+      ansible.builtin.template:
+        src: templates/context.xml.j2
+        dest: "{{ item }}"
+      with_items:
+        - "{{ homedir }}/latest/webapps/manager/META-INF/context.xml"
+        - "{{ homedir }}/latest/webapps/host-manager/META-INF/context.xml"
+      notify:
+        - restart tomcat
+    - name: ensure tomcat is running
+      ansible.builtin.systemd:
+        name: tomcat
+        state: started
+
+  handlers:
+    - name: restart tomcat
       ansible.builtin.systemd:
         name: tomcat
         daemon_reload: true
-        enabled: true
+        enable: true
         state: started
+    - name: Create a symbolic link
+      ansible.builtin.file:
+        src: "{{ homedir }}/apache-tomcat-{{ tomcat_specific_version }}"
+        dest: "{{ homedir }}/latest"
+        owner: "{{ username }}"
+        group: "{{ groupname }}"
+        state: link
