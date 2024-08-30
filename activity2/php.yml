@@ -16,8 +16,3 @@
       ansible.builtin.copy:
         src: info.php 
         dest: /var/www/html/info.php
-    - name: ensure httpd is running
-      ansible.builtin.service:
-        name: httpd
-        enabled: yes
-        state: started
