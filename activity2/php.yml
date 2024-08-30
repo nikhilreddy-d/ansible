@@ -3,16 +3,21 @@
   become: yes
   hosts: all
   tasks:
-    - name: install apache and php package
+    - name: install apache and php packages
       ansible.builtin.apt:
         name:
           - apache2
-          - php 
-          - libapache2-mod-php 
+          - php
+          - libapache2-mod-php
           - php-mysql
-        update_cache: yes
         state: present
+        update_cache: yes
     - name: copy php file
       ansible.builtin.copy:
-        src: info.php
+        src: info.php 
         dest: /var/www/html/info.php
+    - name: ensure httpd is running
+      ansible.builtin.service:
+        name: httpd
+        enabled: yes
+        state: started
